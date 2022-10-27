@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.graphics.Color" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.InputType" />
+
+        <import type="com.nikhil.moneywellspent.util.StringUtils" />
+
+        <import type="com.nikhil.moneywellspent.util.DateUtils" />
+
+        <variable
+            name="transaction"
+            type="com.nikhil.moneywellspent.entity.Transaction" />
+
+        <variable
+            name="edit"
+            type="boolean" />
+
+        <variable
+            name="isCredit"
+            type="boolean" />
+    </data>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="@color/black">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--    Greeting text    -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_view_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/intermedium"
+                android:paddingStart="30dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/edit_transaction"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="RtlSymmetry" />
+
+            <!--     Search and filter icons       -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/linear_layout_transaction_topbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="end">
+
+                <ImageView
+                    android:id="@+id/image_view_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:contentDescription="@string/delete"
+                    android:src="@drawable/ic_delete" />
+
+                <ImageView
+                    android:id="@+id/image_view_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit"
+                    android:src="@{edit?@drawable/ic_close:@drawable/ic_edit}" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!--    Transaction type    -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/linear_layout_transaction_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linear_layout_transaction_topbar"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="30dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/text_view_credit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@{isCredit?Color.GREEN:Color.TRANSPARENT}"
+                    android:enabled="@{edit?true:false}"
+                    android:fontFamily="@font/interbold"
+                    android:text="@string/credit"
+                    android:textAlignment="center"
+                    android:textColor="@{isCredit?Color.BLACK:Color.WHITE}"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_view_debit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@{isCredit?Color.TRANSPARENT:Color.RED}"
+                    android:enabled="@{edit?true:false}"
+                    android:fontFamily="@font/interbold"
+                    android:text="@string/debit"
+                    android:textAlignment="center"
+                    android:textColor="@color/hintBg"
+                    android:textSize="20sp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!--  Category  -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_category"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear_layout_transaction_type"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="30dp"
+                android:enabled="@{edit?true:false}"
+                android:hint="@string/category"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_category">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autocomplete_text_view_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/inputBg"
+                    android:enabled="@{edit?true:false}"
+                    android:inputType="none"
+                    android:labelFor="@+id/categoryLayout"
+                    android:textSize="12sp"
+                    tools:ignore="LabelFor" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--    Date    -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_date"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_input_layout_category"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:enabled="@{edit?true:false}"
+                android:hint="@string/date"
+                app:boxBackgroundColor="@color/inputBg"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_calendar">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_input_edit_text_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{edit?true:false}"
+                    android:inputType="date"
+                    android:text="@{DateUtils.instance.convertTimestampToDate(transaction.createdAt)}"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--    Payee name  -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_payee_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_input_layout_date"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:enabled="@{edit?true:false}"
+                android:hint="@string/payee_name"
+                app:boxBackgroundColor="@color/inputBg"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_person">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_input_edit_text_payee_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{edit?true:false}"
+                    android:inputType="textCapWords"
+                    android:text="@{transaction.name}"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--    Amount paid     -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_amount"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_input_layout_payee_name"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:enabled="@{edit?true:false}"
+                android:hint="@string/amount_paid"
+                app:boxBackgroundColor="@color/inputBg"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:errorEnabled="true"
+                app:expandedHintEnabled="false"
+                app:prefixText="₹"
+                app:startIconDrawable="@drawable/ic_wallet">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_input_edit_text_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{edit?true:false}"
+                    android:inputType="numberDecimal"
+                    android:text="@{StringUtils.instance.convertDoubleMoneyToString(transaction.amount,0)}"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/bankEmojiLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_input_layout_amount">
+
+                <!--    Bank name     -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_input_layout_bank_name"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_input_layout_amount"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="5dp"
+                    android:enabled="@{edit?true:false}"
+                    android:hint="@string/bank_name"
+                    app:boxBackgroundColor="@color/inputBg"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:errorEnabled="true"
+                    app:startIconDrawable="@drawable/ic_money">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_edit_text_bank_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{edit?true:false}"
+                        android:inputType="textCapWords"
+                        android:text="@{transaction.bank}"
+                        android:textSize="12sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--    Emoji     -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_input_layout_emoji"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_input_layout_bank_name"
+                    android:layout_marginEnd="30dp"
+                    android:enabled="@{edit?true:false}"
+                    android:hint="@string/emoji"
+                    app:boxBackgroundColor="@color/inputBg"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:errorEnabled="true"
+                    app:startIconDrawable="@drawable/ic_emoji">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_edit_text_emoji"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{edit?true:false}"
+                        android:inputType="textShortMessage"
+                        android:text="@{transaction.emoji}"
+                        android:textSize="12sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--     Custom expense checkbox       -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_custom_expense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bankEmojiLayout"
+                android:layout_centerHorizontal="true">
+
+                <CheckBox
+                    android:id="@+id/customExpense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@{transaction.isCustom==1 ?true:false}"
+                    android:enabled="@{edit?true:false}"
+                    android:fontFamily="@font/interbold"
+                    android:paddingStart="10dp"
+                    android:text="@string/custom_expense"
+                    android:textColor="@{edit?Color.WHITE:Color.rgb(158,158,158)}"
+                    android:textSize="14sp"
+                    android:visibility="@{transaction.isCustom==1?View.VISIBLE:View.GONE}"
+                    tools:ignore="RtlSymmetry" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--    Edit transaction     -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/updateTransaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_input_layout_custom_expense"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/primary"
+                android:layout_marginEnd="30dp"
+                android:text="@string/save"
+                android:textColor="@color/hintBg"
+                android:visibility="@{edit?View.VISIBLE:View.GONE}" />
+
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+
+</layout>

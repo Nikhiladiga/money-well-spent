@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.nikhil.moneywellspent.util.StringUtils" />
+
+        <variable
+            name="greeting"
+            type="java.lang.String" />
+
+        <variable
+            name="isEmpty"
+            type="boolean" />
+
+        <variable
+            name="balance"
+            type="double" />
+
+        <variable
+            name="expense"
+            type="double" />
+
+        <variable
+            name="month"
+            type="java.lang.String" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="@color/black"
+        tools:context=".MainActivity">
+
+        <!--     Layout body   -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--    Greeting text    -->
+            <TextView
+                android:id="@+id/text_view_greeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/interbold"
+                android:text="@{greeting}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/white"
+                tools:ignore="HardcodedText" />
+
+            <!--     Search and filter icons       -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="end">
+
+                <ImageView
+                    android:id="@+id/image_view_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/search"
+                    android:src="@drawable/ic_search" />
+
+                <ImageView
+                    android:id="@+id/image_view_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:contentDescription="@string/filter"
+                    android:src="@drawable/ic_filter" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!--    Dashboard card    -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_dashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_view_greeting"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/secondary"
+                app:cardCornerRadius="15dp"
+                app:strokeColor="@color/primary"
+                app:strokeWidth="5dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/currentMonth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/intersemibold"
+                        android:text="September"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        tools:ignore="HardcodedText" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="20dp"
+                        app:alignItems="center"
+                        app:flexDirection="row"
+                        app:justifyContent="space_evenly">
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:alignItems="center"
+                            app:flexDirection="column">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/balance"
+                                android:textColor="@color/tertiary"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/interbold"
+                                android:text="@{StringUtils.instance.convertDoubleMoneyToString(balance,1)}"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                tools:ignore="HardcodedText" />
+
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:alignItems="center"
+                            app:flexDirection="column">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/expense"
+                                android:textColor="@color/tertiary"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/interbold"
+                                android:text="@{StringUtils.instance.convertDoubleMoneyToString(expense,1)}"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                tools:ignore="HardcodedText" />
+
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--     Transactions recycler view       -->
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/refresh_layout_transactions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/card_dashboard"
+                android:layout_marginTop="20dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyler_view_transaction_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingBottom="?actionBarSize"
+                    tools:listitem="@layout/transaction_list_item" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </RelativeLayout>
+
+        <!--    Bottom app bar    -->
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_app_bar"
+            style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:backgroundTint="@color/secondary"
+            app:fabAlignmentMode="center"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="10dp"
+            app:menu="@menu/right_menu">
+
+            <androidx.appcompat.widget.ActionMenuView
+                android:id="@+id/menu_view_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <!--   Floating action button to add transaction     -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addTransactionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/primary"
+            android:contentDescription="@string/add_transaction"
+            app:borderWidth="0dp"
+
+            app:layout_anchor="@id/bottom_app_bar"
+            app:srcCompat="@drawable/ic_add"
+            tools:ignore="RelativeOverlap" />
+
+        <!--  No transactions layer -->
+        <RelativeLayout
+            android:id="@+id/layout_no_transactions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/card_dashboard"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="@color/secondary"
+            android:visibility="@{isEmpty?View.VISIBLE:View.GONE}">
+
+            <ImageView
+                android:id="@+id/image_no_transactions"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/no_transactions"
+                android:src="@drawable/ic_no_data" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_no_transactions"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/intermedium"
+                android:text="@string/you_do_not_have_any_transactions"
+                android:textColor="@color/white" />
+
+
+        </RelativeLayout>
+
+        <!--    Search top sheet    -->
+        <LinearLayout
+            android:id="@+id/layout_top_sheet_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/secondary"
+            android:elevation="6dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_behavior="com.nikhil.moneywellspent.util.TopSheetBehavior">
+
+            <ImageView
+                android:id="@+id/image_view_close_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:contentDescription="Close search bar"
+                android:src="@drawable/ic_close"
+                tools:ignore="HardcodedText" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search Transaction" />
+
+<!--            <Button-->
+            <!--                android:id="@+id/btn_search_transactions"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="10dp"-->
+            <!--                android:layout_marginEnd="10dp"-->
+            <!--                android:backgroundTint="@color/primary"-->
+            <!--                android:fontFamily="@font/interbold"-->
+            <!--                android:text="@string/search"-->
+            <!--                android:textColor="@color/white" />-->
+
+        </LinearLayout>
+
+        <!--    Filter top sheet    -->
+        <LinearLayout
+            android:id="@+id/layout_top_sheet_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/secondary"
+            android:elevation="6dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_behavior="com.nikhil.moneywellspent.util.TopSheetBehavior">
+
+            <ImageView
+                android:id="@+id/image_view_close_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:contentDescription="Close search bar"
+                android:src="@drawable/ic_close"
+                tools:ignore="HardcodedText" />
+
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>
